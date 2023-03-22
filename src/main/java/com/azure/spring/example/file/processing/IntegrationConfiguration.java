@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.dsl.Pollers;
-import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.dsl.Files;
 
 import java.io.File;
@@ -33,9 +32,7 @@ public class IntegrationConfiguration {
     public IntegrationFlow fileWritingFlow() {
         return IntegrationFlow
                 .from("inputChannel")
-                .enrichHeaders(h -> h.header(FileHeaders.FILENAME, "foo.txt")
-                        .header("directory", new File(outputDirectory)))
-                .handle(Files.outboundGateway(m -> m.getHeaders().get("directory")))
+                .handle(Files.outboundGateway(m -> outputDirectory))
                 .channel(MessageChannels.queue("outputChannel"))
                 .get();
     }
