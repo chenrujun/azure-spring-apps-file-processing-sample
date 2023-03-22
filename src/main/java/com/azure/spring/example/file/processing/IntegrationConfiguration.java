@@ -24,16 +24,8 @@ public class IntegrationConfiguration {
                 .from(Files.inboundAdapter(new File(inputDirectory)).patternFilter("*.txt"),
                         e -> e.poller(Pollers.fixedDelay(100)))
                 .transform(Files.toStringTransformer())
-                .channel("inputChannel")
-                .get();
-    }
-
-    @Bean
-    public IntegrationFlow fileWritingFlow() {
-        return IntegrationFlow
-                .from("inputChannel")
                 .handle(Files.outboundGateway(m -> outputDirectory))
-                .channel(MessageChannels.queue("outputChannel"))
+                .channel(MessageChannels.queue())
                 .get();
     }
 
