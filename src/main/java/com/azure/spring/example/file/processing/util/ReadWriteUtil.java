@@ -17,7 +17,7 @@ public class ReadWriteUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadWriteUtil.class);
 
     public static void writeUserToAvroFile(User user, File file) throws IOException {
-        LOGGER.debug("Write user to file. user = {}, file = {};", user, file.getAbsolutePath());
+        LOGGER.debug("Write user to avro file. user = {}, file = {};", user, file.getAbsolutePath());
         DatumWriter<User> userDatumWriter = new SpecificDatumWriter<>(User.class);
         DataFileWriter<User> dataFileWriter = new DataFileWriter<>(userDatumWriter);
         dataFileWriter.create(user.getSchema(), file);
@@ -29,7 +29,7 @@ public class ReadWriteUtil {
         DatumReader<User> userDatumReader = new SpecificDatumReader<>(User.class);
         try (DataFileReader<User> dataFileReader = new DataFileReader<>(file, userDatumReader)) {
             User user = dataFileReader.next();
-            LOGGER.debug("Read user from file. user = {}, file = {}. ", user, file.getAbsolutePath());
+            LOGGER.debug("Read user from avro file. user = {}, file = {}. ", user, file.getAbsolutePath());
             return user;
         }
     }
