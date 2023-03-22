@@ -1,5 +1,5 @@
 {
-  "namespace": "com.azure.spring.example.file.processing.avro",
+  "namespace": "com.azure.spring.example.file.processing.avro.generated",
   "type": "record",
   "name": "User",
   "fields": [
