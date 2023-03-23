@@ -1,4 +1,1 @@
-file-2 content line 1
-file-2 content line 2
-
-file-2 content line 4
+User3,blue,3

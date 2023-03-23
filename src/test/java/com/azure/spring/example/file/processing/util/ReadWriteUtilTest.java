@@ -9,16 +9,18 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
+import static com.azure.spring.example.file.processing.util.ReadWriteUtil.fromAvroBytes;
 import static com.azure.spring.example.file.processing.util.ReadWriteUtil.readUserFromAvroFile;
 import static com.azure.spring.example.file.processing.util.ReadWriteUtil.readUsersFromTxtFile;
-import static com.azure.spring.example.file.processing.util.ReadWriteUtil.toUser;
+import static com.azure.spring.example.file.processing.util.ReadWriteUtil.toAvroBytes;
+import static com.azure.spring.example.file.processing.util.ReadWriteUtil.txtStrngToUser;
 import static com.azure.spring.example.file.processing.util.ReadWriteUtil.writeUserToAvroFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ReadWriteUtilTest {
 
-    private static final String USER_1_STRING = "User1,blue,1";
+    private static final String USER_1_TXT_STRING = "User1,blue,1";
     private static final User USER_1 = User.newBuilder()
             .setName("User1")
             .setFavoriteColor("blue")
@@ -31,8 +33,8 @@ public class ReadWriteUtilTest {
             .build();
 
     @Test
-    public void oneUserWriteThenReadTest() throws IOException {
-        File file = File.createTempFile("ReadWriteUtilTest-", ".txt");
+    public void userWriteToFileThenReadTest() throws IOException {
+        File file = File.createTempFile("ReadWriteUtilTest-", ".avro");
         writeUserToAvroFile(USER_1, file);
         User user = readUserFromAvroFile(file);
         assertEquals(USER_1, user);
@@ -40,7 +42,7 @@ public class ReadWriteUtilTest {
 
     @Test
     public void toUserTest() {
-        assertEquals(USER_1, toUser(USER_1_STRING));
+        assertEquals(USER_1, txtStrngToUser(USER_1_TXT_STRING));
     }
 
     @Test
@@ -54,5 +56,10 @@ public class ReadWriteUtilTest {
         assertNull(users.get(1));
         assertEquals(USER_2, users.get(2));
         assertNull(users.get(3));
+    }
+
+    @Test
+    public void userWriteToBytesThenReadTest() throws IOException {
+        assertEquals(USER_1, fromAvroBytes(toAvroBytes(USER_1)));
     }
 }

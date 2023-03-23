@@ -1,5 +1,6 @@
 package com.azure.spring.example.file.processing;
 
+import com.azure.spring.example.file.processing.util.ReadWriteUtil;
 import com.azure.spring.integration.core.handler.DefaultMessageHandler;
 import com.azure.spring.messaging.eventhubs.core.EventHubsTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ public class IntegrationConfiguration {
                 .from(Files.inboundAdapter(new File(inputDirectory)))
                 .filter(((File file) -> file.getName().endsWith(".txt")))
                 .transform(Files.toStringTransformer())
+                .transform(ReadWriteUtil::txtStringToAvroBytes)
                 .handle(new DefaultMessageHandler(eventHubName, eventHubsTemplate))
                 .get();
     }
