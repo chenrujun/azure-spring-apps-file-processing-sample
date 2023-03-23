@@ -32,6 +32,8 @@ public class IntegrationConfiguration {
                 .from(Files.inboundAdapter(new File(inputDirectory)))
                 .filter(((File file) -> file.getName().endsWith(".txt")))
                 .transform(Files.toStringTransformer())
+                .transform((String string) -> string.split("\\r?\\n"))
+                .split()
                 .transform(ReadWriteUtil::txtStringToAvroBytes)
                 .handle(new DefaultMessageHandler(eventHubName, eventHubsTemplate))
                 .get();

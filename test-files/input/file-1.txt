@@ -1,1 +1,2 @@
-User1,blue,1
+User1,red,1
+User2,blue,2
