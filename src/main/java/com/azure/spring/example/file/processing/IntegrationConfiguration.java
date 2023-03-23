@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.file.dsl.Files;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 
@@ -34,6 +35,7 @@ public class IntegrationConfiguration {
                 .transform(Files.toStringTransformer())
                 .transform((String string) -> string.split("\\r?\\n"))
                 .split()
+                .filter((String string) -> StringUtils.hasText(string))
                 .transform(ReadWriteUtil::txtStringToAvroBytes)
                 .handle(new DefaultMessageHandler(eventHubName, eventHubsTemplate))
                 .get();
