@@ -1,5 +1,4 @@
 input-directory: "test-files/input"
-output-directory: "test-files/output"
 logging:
   level:
     root: INFO
@@ -7,3 +6,11 @@ logging:
       springframework:
         integration:
           file: DEBUG
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string:
+        event-hub-name:
+  config:
+    import: develop.yml
