@@ -17,9 +17,10 @@ public class TestFileGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestFileGenerator.class);
 
     public static void main(String[] args) {
-        generateTestFiles("test-files/generated", 1, 100);
+        generateTestFiles("test-files/generated", 1, 1_00_000);
     }
 
+    // When lineCount = 1_00_000, the file size is 10 MB.
     public static void generateTestFiles(String directory, int fileCount, int lineCount) {
         File directoryFile = new File(directory);
         if (!FileSystemUtils.deleteRecursively(directoryFile)) {
@@ -52,9 +53,9 @@ public class TestFileGenerator {
     }
 
     public static String generateLine() {
-        return String.format("User_%s,Color_%s,%s",
+        return String.format("test_user__%s, test__color_%s, %s",
                 UUID.randomUUID(),
                 UUID.randomUUID(),
-                random.nextInt(100));
+                random.nextInt(100_000));
     }
 }
