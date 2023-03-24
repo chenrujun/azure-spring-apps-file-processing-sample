@@ -65,14 +65,14 @@ public class ReadWriteUtil {
         }
         String[] items = string.split(",");
         if (items.length != 3) {
-            LOGGER.warn("Txt string is malformed. The right format is '{name},{favorite_color},{favorite_number}'. string = {}.", string);
+            LOGGER.warn("Txt string is malformed. The right format is '{name},{favorite_color},{favorite_number}'. But the actual string = {}.", string);
             return null;
         }
         int favoriteNumber;
         try {
             favoriteNumber = Integer.parseInt(items[2]);
         } catch (NumberFormatException e) {
-            LOGGER.warn("favorite_number is malformed. favorite_number must be a number. favorite_number = {}.", items[2]);
+            LOGGER.warn("favorite_number is malformed. favorite_number must be a number. But the actual favorite_number = {}.", items[2]);
             return null;
         }
         return User.newBuilder()
@@ -82,10 +82,16 @@ public class ReadWriteUtil {
                 .build();
     }
 
+    /**
+     * Convert {@link User} to avro bytes. If convert failed, return new byte[0].
+     *
+     * @param user The user to ve converted to avro bytes.
+     * @return The avro bytes.
+     */
     public static byte[] toAvroBytes(User user) {
         LOGGER.debug("Write user to avro string. user = {}", user);
         if (user == null) {
-            return null;
+            return new byte[0];
         }
         File file;
         try {
@@ -94,7 +100,7 @@ public class ReadWriteUtil {
             return Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             LOGGER.error("User to avro bytes failed.", e);
-            throw new RuntimeException(e);
+            return new byte[0];
         }
     }
 

@@ -41,6 +41,7 @@ public class IntegrationConfiguration {
                 .split()
                 .<String>filter(StringUtils::hasText)
                 .transform(ReadWriteUtil::txtStringToAvroBytes)
+                .filter(this::isValidAvroBytes)
                 .handle(new DefaultMessageHandler(eventHubName, eventHubsTemplate))
                 .get();
     }
@@ -57,6 +58,10 @@ public class IntegrationConfiguration {
 
     private String[] splitByLine(String string) {
         return string.split("\\r?\\n");
+    }
+
+    private boolean isValidAvroBytes(byte[] bytes) {
+        return bytes.length > 0;
     }
 
 }
