@@ -60,17 +60,25 @@ public class ReadWriteUtil {
     public static User txtStrngToUser(String string) {
         LOGGER.debug("Convert string to user. string = '{}'. ", string);
         if (string == null) {
+            LOGGER.warn("Txt String is null.");
             return null;
         }
         String[] items = string.split(",");
         if (items.length != 3) {
-            LOGGER.debug("Convert string to user failed. items.length = {}. ", items.length);
+            LOGGER.warn("Txt string is malformed. The right format is '{name},{favorite_color},{favorite_number}'. string = {}.", string);
+            return null;
+        }
+        int favoriteNumber;
+        try {
+            favoriteNumber = Integer.parseInt(items[2]);
+        } catch (NumberFormatException e) {
+            LOGGER.warn("favorite_number is malformed. favorite_number must be a number. favorite_number = {}.", items[2]);
             return null;
         }
         return User.newBuilder()
                 .setName(items[0])
                 .setFavoriteColor(items[1])
-                .setFavoriteNumber(Integer.valueOf(items[2]))
+                .setFavoriteNumber(favoriteNumber)
                 .build();
     }
 
