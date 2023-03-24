@@ -36,7 +36,7 @@ public class TestFileGenerator {
                     LOGGER.error("Generate file failed. File = {}.", file.getAbsolutePath());
                 }
                 fulfillFile(file, lineCount);
-                LOGGER.info("Generated file. File = {}.", file.getAbsolutePath());
+                LOGGER.info("Generated file. File = {}, lineCount = {}, fileSize = {} (MB).", file.getAbsolutePath(), lineCount, file.length() / (1024 * 1024));
             } catch (IOException e) {
                 LOGGER.error("Fulfill file error. ", e);
             }
