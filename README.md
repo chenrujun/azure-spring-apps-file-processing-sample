@@ -9,6 +9,7 @@
     - Auto recovery from error, for example:
       - An invalid text format.
       - Event Hub is unreachable.
+      - Too many data to process in one interval.
       - Any other common errors.
     - Easy troubleshooting.
 5. This is a classic [Enterprise Integration Pattern](http://www.eaipatterns.com/), so we use the [Spring Boot](https://spring.io/projects/spring-boot) + [Spring Integration](https://spring.io/projects/spring-integration) in this application.
