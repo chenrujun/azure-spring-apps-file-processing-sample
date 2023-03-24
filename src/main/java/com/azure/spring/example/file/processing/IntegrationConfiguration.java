@@ -3,6 +3,8 @@ package com.azure.spring.example.file.processing;
 import com.azure.spring.example.file.processing.util.ReadWriteUtil;
 import com.azure.spring.integration.core.handler.DefaultMessageHandler;
 import com.azure.spring.messaging.eventhubs.core.EventHubsTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,8 @@ import java.io.File;
 
 @Configuration
 public class IntegrationConfiguration {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationConfiguration.class);
 
     private final String inputDirectory;
     private final String eventHubName;
@@ -31,14 +35,28 @@ public class IntegrationConfiguration {
     public IntegrationFlow fileReadingFlow() {
         return IntegrationFlow
                 .from(Files.inboundAdapter(new File(inputDirectory)))
-                .filter(((File file) -> file.getName().endsWith(".txt")))
+                .filter(this::isTargetFile)
                 .transform(Files.toStringTransformer())
-                .transform((String string) -> string.split("\\r?\\n"))
+                .transform(this::splitByLine)
                 .split()
-                .filter((String string) -> StringUtils.hasText(string))
+                .<String>filter(StringUtils::hasText)
                 .transform(ReadWriteUtil::txtStringToAvroBytes)
                 .handle(new DefaultMessageHandler(eventHubName, eventHubsTemplate))
                 .get();
+    }
+
+    private boolean isTargetFile(File file) {
+        String absolutePath = file.getAbsolutePath();
+        LOGGER.info("Find a new file. File = {}", absolutePath);
+        boolean isTargetFile = file.getName().endsWith(".txt");
+        if (!isTargetFile) {
+            LOGGER.info("File filtered out file because it's not txt file. File = {}", file.getAbsolutePath());
+        }
+        return isTargetFile;
+    }
+
+    private String[] splitByLine(String string) {
+        return string.split("\\r?\\n");
     }
 
 }

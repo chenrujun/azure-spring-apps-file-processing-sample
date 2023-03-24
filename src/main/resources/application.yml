@@ -7,11 +7,14 @@ logging:
         spring:
           example:
             file:
-              processing: DEBUG
+              processing: INFO
+        messaging:
+          eventhubs: WARN
+        core:
+          amqp: WARN
     org:
       springframework:
-        integration:
-          file: DEBUG
+        integration: WARN
 spring:
   cloud:
     azure:
