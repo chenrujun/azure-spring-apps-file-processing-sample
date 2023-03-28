@@ -17,20 +17,24 @@ public class TestFileGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestFileGenerator.class);
 
     public static void main(String[] args) {
-        generateTestFiles("test-files/generated", 1, 1_00_000);
+        generateTestFiles("test-files/generated", true,"10_000-lines-", 10, 10_000);
     }
 
     // When lineCount = 1_00_000, the file size is 10 MB.
-    public static void generateTestFiles(String directory, int fileCount, int lineCount) {
+    public static void generateTestFiles(String directory, boolean deleteFolderFirst, String filePrefix, int fileCount, int lineCount) {
         File directoryFile = new File(directory);
-        if (!FileSystemUtils.deleteRecursively(directoryFile)) {
-            LOGGER.info("Delete directory failed. directory = {}.", directory);
+        if (deleteFolderFirst) {
+            if (!FileSystemUtils.deleteRecursively(directoryFile)) {
+                LOGGER.info("Delete directory failed. directory = {}.", directory);
+                return;
+            }
         }
         if (!directoryFile.mkdirs()) {
             LOGGER.error("Create directory failed. directory = {}.", directory);
+            return;
         }
         for (int i = 0; i < fileCount; i++) {
-            File file = new File(directory, "test-file-" + i + ".txt");
+            File file = new File(directory, filePrefix + i + ".txt");
             try {
                 if (!file.createNewFile()) {
                     LOGGER.error("Generate file failed. File = {}.", file.getAbsolutePath());
