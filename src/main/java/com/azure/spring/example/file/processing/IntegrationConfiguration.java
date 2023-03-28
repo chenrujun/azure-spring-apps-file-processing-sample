@@ -1,6 +1,7 @@
 package com.azure.spring.example.file.processing;
 
-import com.azure.spring.example.file.processing.util.ReadWriteUtil;
+import com.azure.spring.example.file.processing.util.AvroUtil;
+import com.azure.spring.example.file.processing.util.TxtLine;
 import com.azure.spring.integration.core.handler.DefaultMessageHandler;
 import com.azure.spring.messaging.eventhubs.core.EventHubsTemplate;
 import org.slf4j.Logger;
@@ -10,9 +11,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.file.dsl.Files;
-import org.springframework.util.StringUtils;
+import org.springframework.messaging.Message;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class IntegrationConfiguration {
@@ -37,10 +40,9 @@ public class IntegrationConfiguration {
                 .from(Files.inboundAdapter(new File(inputDirectory)))
                 .filter(this::isTargetFile)
                 .transform(Files.toStringTransformer())
-                .transform(this::splitByLine)
+                .transform(this::toTxtLine)
                 .split()
-                .<String>filter(StringUtils::hasText)
-                .transform(ReadWriteUtil::txtStringToAvroBytes)
+                .transform(Message.class, this::toAvroBytes)
                 .filter(this::isValidAvroBytes)
                 .handle(new DefaultMessageHandler(eventHubName, eventHubsTemplate))
                 .get();
@@ -56,12 +58,25 @@ public class IntegrationConfiguration {
         return isTargetFile;
     }
 
-    private String[] splitByLine(String string) {
-        return string.split("\\r?\\n");
+    private List<TxtLine> toTxtLine(String string) {
+        String[] lines = string.split("\\r?\\n");
+        List<TxtLine> txtLines= new ArrayList<>();
+        for (int i = 0; i < lines.length; i++) {
+            txtLines.add(new TxtLine(i + 1, lines[i]));
+        }
+        return txtLines;
     }
 
     private boolean isValidAvroBytes(byte[] bytes) {
         return bytes.length > 0;
+    }
+
+    private byte[] toAvroBytes(Message<TxtLine> message) {
+        String fileName = (String) message.getHeaders().get("fileName");
+        TxtLine line = message.getPayload();
+        int lineNumber = line.lineNumber();
+        String content = line.content();
+        return AvroUtil.toAvroBytes(fileName, lineNumber, content);
     }
 
 }

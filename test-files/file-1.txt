@@ -1,5 +1,6 @@
 User1,red,1
-
 User2,blue,2
-User3.green,3
-User4,black,l
+User3: wrong format 1.green,3
+
+User5: wrong format 3
+User6: wrong format 4,black,l
