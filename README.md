@@ -17,7 +17,7 @@
    - [0%] Too many data to process in one interval. Not handled. Current idea: Handle it by admin instance and worker instance.
 6. [100%] This is a classic [Enterprise Integration Pattern](http://www.eaipatterns.com/), so we use the [Spring Boot](https://spring.io/projects/spring-boot) + [Spring Integration](https://spring.io/projects/spring-integration) in this application.
 
-## Scenario 1: Run on Azure Spring Apps Consumption plan.
+## Scenario 1: Run on Azure Spring Apps Consumption plan
 
 ### Provision required Azure resources
 1. Provision an Azure Spring Apps Standard consumption plan. Refs: [Provision an Azure Spring Apps Standard consumption plan service instance](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-provision-standard-consumption-service-instance?tabs=Azure-portal).
@@ -44,3 +44,16 @@
      --service $AZURE_SPRING_APPS_INSTANCE \
      --name $APP_NAME
    ```
+
+## Scenario 2: Error Processing
+
+TODO: Check the logs for the wrong data format items.
+
+## Scenario 3: Store secret in Azure Key Vault
+
+TODO: For example: store file passwords / connection-string in Azure Key Vault.
+
+## Scenario 4: Auto Scaling.
+
+My (Rujun's) concern: Can not finish this before 4.06.
+
