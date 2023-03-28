@@ -12,6 +12,7 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.file.dsl.Files;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandler;
 
 import java.io.File;
 
@@ -42,8 +43,14 @@ public class IntegrationConfiguration {
                 .transform(Message.class, FileMessageUtil::toTxtLine)
                 .split()
                 .transform(Message.class, FileMessageUtil::toAvroBytes)
-                .handle(new DefaultMessageHandler(eventHubName, eventHubsTemplate))
+                .handle(defaultMessageHandler())
                 .get();
+    }
+
+    private MessageHandler defaultMessageHandler() {
+        DefaultMessageHandler handler = new DefaultMessageHandler(eventHubName, eventHubsTemplate);
+        handler.setSendCallback(new OnFailureExitSystemCallback());
+        return handler;
     }
 
 }
