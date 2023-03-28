@@ -18,49 +18,52 @@ public class AvroUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(AvroUtil.class);
 
 
-    public static byte[] toAvroBytes(String fileName, int lineNumber, String string) {
-        LOGGER.debug("Convert txt string to avro bytes. fileName = {}, lineNumber = {}, string = '{}'. ", fileName, lineNumber, string);
-        User user = toUser(fileName, lineNumber, string);
-        return userToAvroBytes(fileName, lineNumber, user);
+    public static byte[] toAvroBytes(String file, int lineNumber, String string) {
+        LOGGER.debug("Convert txt string to avro bytes. file = {}, lineNumber = {}, string = '{}'. ", file, lineNumber, string);
+        User user = toUser(file, lineNumber, string);
+        return userToAvroBytes(file, lineNumber, user);
     }
 
-    public static User toUser(String fileName, int lineNumber, String string) {
-        LOGGER.debug("Convert txt string to User. fileName = {}, lineNumber = {}, string = '{}'. ", fileName, lineNumber, string);
+    public static User toUser(String file, int lineNumber, String string) {
+        LOGGER.debug("Convert txt string to User. file = {}, lineNumber = {}, string = '{}'. ", file, lineNumber, string);
         if (string == null) {
-            LOGGER.warn("Convert txt string to User failed: string = null. fileName = {}, lineNumber = {}.", fileName, lineNumber);
+            LOGGER.warn("Convert txt string to User failed: string = null. file = {}, lineNumber = {}.", file, lineNumber);
             return null;
         }
         String[] items = string.split(",");
         if (items.length != 3) {
-            LOGGER.warn("Convert txt string to User failed: The string should has this format: '{name},{favorite_color},{favorite_number}'. fileName = {}, lineNumber = {}, string = '{}'. ", fileName, lineNumber, string);
+            LOGGER.warn("Convert txt string to User failed: The string should has this format: '{name},{favorite_color},{favorite_number}'. file = {}, lineNumber = {}, string = '{}'. ", file, lineNumber, string);
             return null;
         }
+        String name = items[0].trim();
+        String color = items[1].trim();
+        String number = items[2].trim();
         int favoriteNumber;
         try {
-            favoriteNumber = Integer.parseInt(items[2]);
+            favoriteNumber = Integer.parseInt(number);
         } catch (NumberFormatException e) {
-            LOGGER.warn("Convert txt string to User failed: favorite_number must be a number. But the actual favorite_number = {}. fileName = {}, lineNumber = {}, string = '{}'.", items[2], fileName, lineNumber, string);
+            LOGGER.warn("Convert txt string to User failed: favorite_number must be a number. But the actual favorite_number = {}. file = {}, lineNumber = {}, string = '{}'.", number, file, lineNumber, string);
             return null;
         }
         return User.newBuilder()
-                .setName(items[0])
-                .setFavoriteColor(items[1])
+                .setName(name)
+                .setFavoriteColor(color)
                 .setFavoriteNumber(favoriteNumber)
                 .build();
     }
 
-    public static byte[] userToAvroBytes(String fileName, int lineNumber, User user) {
-        LOGGER.debug("Convert txt User to avro bytes. fileName = {}, lineNumber = {}, user = '{}'. ", fileName, lineNumber, user);
+    public static byte[] userToAvroBytes(String file, int lineNumber, User user) {
+        LOGGER.debug("Convert txt User to avro bytes. file = {}, lineNumber = {}, user = '{}'. ", file, lineNumber, user);
         if (user == null) {
             return new byte[0];
         }
-        File file;
+        File tempFile;
         try {
-            file = File.createTempFile("AvroUtil-", ".avro");
-            writeUserToAvroFile(user, file);
-            return Files.readAllBytes(file.toPath());
+            tempFile = File.createTempFile("AvroUtil-", ".avro");
+            writeUserToAvroFile(user, tempFile);
+            return Files.readAllBytes(tempFile.toPath());
         } catch (IOException e) {
-            LOGGER.warn("Convert txt User to avro bytes failed. fileName = {}, lineNumber = {}, user = '{}'.", fileName, lineNumber, user, e);
+            LOGGER.warn("Convert txt User to avro bytes failed. file = {}, lineNumber = {}, user = '{}'.", file, lineNumber, user, e);
             return new byte[0];
         }
     }
