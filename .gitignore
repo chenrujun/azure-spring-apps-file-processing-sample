@@ -473,3 +473,5 @@ out/
 .vscode/
 
 develop.yml
+
+test-files/generated
