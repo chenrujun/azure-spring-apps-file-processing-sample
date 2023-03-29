@@ -15,6 +15,5 @@ public class OnFailureExitSystemCallback implements ListenableFutureCallback<Voi
     @Override
     public void onSuccess(Void result) {
         LOGGER.debug("Message handled successfully.");
-
     }
 }
