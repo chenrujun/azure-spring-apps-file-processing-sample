@@ -27,7 +27,7 @@
 ### Deploy current sample.
 1. Build package.
    ```shell
-   mvn clean package
+   ./mvnw clean package
    ```
 2. Deploy app
    ```shell
