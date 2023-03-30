@@ -37,7 +37,7 @@ public class IntegrationConfiguration {
     @Bean
     public IntegrationFlow fileReadingFlow() {
         return IntegrationFlow
-                .from(Files.inboundAdapter(new File(inputDirectory)).recursive(true),
+                .from(Files.inboundAdapter(new File(inputDirectory)).recursive(true).useWatchService(true),
                         e -> e.poller(Pollers.fixedDelay(0).advice(new ExitSystemReceiveMessageAdvice())))
                 .filter(FileMessageUtil::isTargetFile)
                 .transform(Files.toStringTransformer())
