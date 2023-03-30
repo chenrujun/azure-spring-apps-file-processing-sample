@@ -474,4 +474,4 @@ out/
 
 develop.yml
 
-test-files/generated
+test-files/input/generated

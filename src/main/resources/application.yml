@@ -1,4 +1,4 @@
-input-directory: "test-files"
+input-directory: "test-files/input"
 logging:
   level:
     root: INFO
