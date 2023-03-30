@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.file.dsl.Files;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
@@ -30,14 +31,14 @@ public class IntegrationConfiguration {
         this.inputDirectory = inputDirectory;
         this.eventHubName = eventHubName;
         this.eventHubsTemplate = eventHubsTemplate;
+        LOGGER.info("inputDirectory = {}, eventHubName = {}.", inputDirectory, eventHubName);
     }
 
     @Bean
     public IntegrationFlow fileReadingFlow() {
         return IntegrationFlow
-                .from(Files.inboundAdapter(new File(inputDirectory)).recursive(true))
-//                .from(Files.inboundAdapter(new File(inputDirectory)).recursive(true),
-//                        e -> e.poller(Pollers.fixedDelay(0).advice(new ExitSystemReceiveMessageAdvice())))
+                .from(Files.inboundAdapter(new File(inputDirectory)).recursive(true),
+                        e -> e.poller(Pollers.fixedDelay(0).advice(new ExitSystemReceiveMessageAdvice())))
                 .filter(FileMessageUtil::isTargetFile)
                 .transform(Files.toStringTransformer())
                 .transform(Message.class, FileMessageUtil::toTxtLine)

@@ -10,15 +10,20 @@ import static com.azure.spring.example.file.processing.util.FileMessageUtil.getF
 
 public class ExitSystemReceiveMessageAdvice implements ReceiveMessageAdvice {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExitSystemReceiveMessageAdvice.class);
+    private boolean lastResultIsNull = true;
 
     @Override
     public Message<?> afterReceive(Message<?> result, Object source) {
-        if (result == null) {
-            LOGGER.info("Get null when receive message, exit system.");
-            System.exit(0);
+        boolean resultIsNull = (result == null);
+        if (resultIsNull != lastResultIsNull) {
+            LOGGER.info("Message receiving status changed, received message is {}.", resultIsNull ? "null" : "not null");
+            lastResultIsNull = resultIsNull;
+            // System.exit(0);
         }
-        LOGGER.info("Start to handle file. file = {}, fileSize = {}. ",
-                getAbsolutePath(result), getFileSize(result));
+        if (!resultIsNull) {
+            LOGGER.info("Start to handle file. file = {}, fileSize = {}. ",
+                    getAbsolutePath(result), getFileSize(result));
+        }
         return result;
     }
 }
