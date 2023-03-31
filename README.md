@@ -75,7 +75,9 @@
    Screenshot:
    ![wrong-text-format](./pictures/wrong-text-format.png)
 
-2. Easy troubleshooting. For example: Get all logs about a specific file.
+2. Easy troubleshooting. 
+
+   2.1. Example 1: Get all logs about a specific file.
 
    Query:
    ```
@@ -89,6 +91,13 @@
 
    Screenshot:
    ![get-all-logs-about-a-specific-file](./pictures/get-all-logs-about-a-specific-file.png)
+
+   2.2. Example 2: Check events in Azure Event Hubs.
+   
+   Events in Azure Event Hubs can be viewed by [ServiceBusExplorer](https://github.com/paolosalvatori/ServiceBusExplorer). (I'm using version 5.0.4.)
+
+   Screenshot:
+   ![service-bus-explorer](./pictures/service-bus-explorer.png)
 
 ## Scenario 3: Store secret in Azure Key Vault
 
