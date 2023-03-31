@@ -13,7 +13,7 @@
 5. [60%] Operation friendly: Auto recovery from error, for example:
    - [100%] An invalid text format. Handled by: Output a warning log.
    - [100%] Easy troubleshooting. For example: Get all logs about a specific file.
-   - [50%] Event Hub is unreachable. Handled by: Exit system when send message to EventHub failed.
+   - [100%] Event Hub is unreachable. Handled by: Output en error log then exit system.
    - [0%] Too many data to process in one interval. Not handled. Current idea: Handle it by admin instance and worker instance.
 6. [100%] This is a classic [Enterprise Integration Pattern](http://www.eaipatterns.com/), so we use the [Spring Boot](https://spring.io/projects/spring-boot) + [Spring Integration](https://spring.io/projects/spring-integration) in this application.
 
@@ -92,7 +92,11 @@
 
 ## Scenario 3: Store secret in Azure Key Vault
 
-TODO: For example: store file passwords / connection-string in Azure Key Vault.
+Secret can be stored in [Azure Key Vault secrets](https://learn.microsoft.com/en-us/azure/key-vault/secrets/about-secrets) and used in this application. [spring-cloud-azure-starter-keyvault](https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-key-vault) is a useful tool to get secrets from Azure KeyVault in Spring Boot applications. And `spring-cloud-azure-starter-keyvault` supports refresh the secrets in a fixed interval.
+
+The following values can be treated as secrets in current file-processing application:
+1. Connection string to Azure Event Hubs.
+2. Passwords of a specific file. All file-secret can be stored a key-value map. And the key-value map can be serialized and stored in Azure Key Vault Secrets. 
 
 ## Scenario 4: Auto Scaling.
 
