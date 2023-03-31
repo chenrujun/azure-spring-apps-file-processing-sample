@@ -51,6 +51,7 @@ public class IntegrationConfiguration {
                 .split()
                 .enrichHeaders(s -> s.headerExpressions(c -> c.put(LINE_NUMBER_IN_FILE, "payload.lineNumber()")))
                 .transform(Message.class, FileMessageUtil::toAvroBytes)
+                .filter((byte[] bytes) -> bytes.length > 0)
                 .handle(defaultMessageHandler())
                 .get();
     }

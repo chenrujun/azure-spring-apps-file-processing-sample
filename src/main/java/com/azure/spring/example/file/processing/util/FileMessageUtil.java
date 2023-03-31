@@ -67,6 +67,11 @@ public class FileMessageUtil {
         return isTargetFile;
     }
 
+    /**
+     * Convert {@link TxtLine} to byte array.
+     * @param message The message which holds TxtLine as payload.
+     * @return The byte array. Empty array if convert failed.
+     */
     public static byte[] toAvroBytes(Message<TxtLine> message) {
         String absolutePath = getAbsolutePath(message);
         TxtLine line = message.getPayload();
