@@ -18,6 +18,7 @@ public class FileMessageUtil {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(FileMessageUtil.class);
     public static final String FILE_ORIGINAL_FILE = "file_originalFile";
+    public static final String LINE_NUMBER_IN_FILE = "lineNumberInFile";
 
     public static List<TxtLine> toTxtLineThenMoveFile(Message<String> message, String inputDirectory, String outputDirectory) {
         String[] lines = message.getPayload().split("\\r?\\n");

@@ -16,6 +16,8 @@ import org.springframework.messaging.MessageHandler;
 
 import java.io.File;
 
+import static com.azure.spring.example.file.processing.util.FileMessageUtil.LINE_NUMBER_IN_FILE;
+
 @Configuration
 public class IntegrationConfiguration {
 
@@ -47,6 +49,7 @@ public class IntegrationConfiguration {
                 .transform(Files.toStringTransformer())
                 .transform(Message.class, message -> FileMessageUtil.toTxtLineThenMoveFile((Message<String>) message, inputDirectory, outputDirectory)) // TODO: Improvements: 1. Move file after send message to event hub. 2. Move file that isTargetFile() == false.
                 .split()
+                .enrichHeaders(s -> s.headerExpressions(c -> c.put(LINE_NUMBER_IN_FILE, "payload.lineNumber()")))
                 .transform(Message.class, FileMessageUtil::toAvroBytes)
                 .handle(defaultMessageHandler())
                 .get();
