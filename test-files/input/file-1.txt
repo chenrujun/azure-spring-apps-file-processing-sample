@@ -4,3 +4,4 @@ User3: wrong format 1.green,3
 
 User5: wrong format 3
 User6: wrong format 4,black,l
+User7,blue,7
