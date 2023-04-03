@@ -109,5 +109,30 @@ The following values can be treated as secrets in current file-processing applic
 
 ## Scenario 4: Auto Scaling.
 
-Not finished yet. Need to consider how to split the tasks into each app instance. Let each app instance handle a sub set of all files.
+NOTE: This feature is not implemented yet. The following contents are just some considerations.
+
+### 4.1. Scale 0 - 1
+
+#### 4.1.1. Requirement
+
+1. Scale to 0 instance when:
+   - There is no file need to be handled for more than 1 hour. 
+2. Scale to 1 instance when one of these requirements satisfied:
+   - File exists for more than 1 hour.
+   - File count > 100.
+   - File total size > 1 GB.
+
+#### 4.1.2. Current Problem
+1. Now KEDA does not support scaling by Azure Storage File Share. Refs: [Currently available scalers for KEDA](https://keda.sh/docs/2.9/scalers/)
+
+### 4.2. Scale 1 - n
+
+#### 4.2.1. Requirement
+
+1. Scale instances by the workload. Here are some example strategy:
+    - Scale instance number to Math.max(fileCount / 10000. fileSize / 10000).
+
+#### 4.2.2. Current Problem
+1. Now KEDA does not support scaling by Azure Storage File Share. Refs: [Currently available scalers for KEDA](https://keda.sh/docs/2.9/scalers/).
+2. In current implementation, when the instance count > 1, files are possible to be processed more than one time. Maybe [Master/slave module](https://en.wikipedia.org/wiki/Master/slave_(technology)) can be used. Need more investigation to implement this module in ASA.
 
