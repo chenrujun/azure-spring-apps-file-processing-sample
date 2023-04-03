@@ -58,9 +58,14 @@
 
 ## 2. Run Current Sample on Azure Spring Apps Consumption Plan
 
-### 2.1. System diagram
+### 2.1. System Diagram
 
-   ![get-all-logs-about-a-specific-file](./pictures/get-all-logs-about-a-specific-file.png)
+   ![system-diagram](./pictures/system-diagram.png)
+
+1. **Azure Spring Apps**: Current application will run on Azure Spring Apps.
+2. **Azure Storage Files**: Log files stored in Azure Storage files.
+3. **Azure Event Hubs**: In log files, each valid line will be converted into avro format then send to Azure Event Hubs. 
+4. **Log Analytics**: When current application run in Azure Spring Apps, the logs can be viewed by Log Analytics.
 
 ### Provision required Azure resources
 1. Provision an Azure Spring Apps Standard consumption plan. Refs: [Provision an Azure Spring Apps Standard consumption plan service instance](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-provision-standard-consumption-service-instance?tabs=Azure-portal).
