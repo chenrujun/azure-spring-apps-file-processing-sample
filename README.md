@@ -71,16 +71,36 @@
 ### 2.1. Provision Required Azure Resources
 
 1. Provision an Azure Spring Apps Standard consumption plan. Refs: [Provision an Azure Spring Apps Standard consumption plan service instance](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-provision-standard-consumption-service-instance?tabs=Azure-portal).
-2. Create an Azure Event Hub. Refs: [Create an event hub using Azure portal](https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-create).
-3. Create Azure Storage. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption).
-4. Mount Azure Storage into Azure Spring Apps. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption#add-storage-to-an-app).
+2. Create An app.
+3. Create an Azure Event Hub. Refs: [Create an event hub using Azure portal](https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-create).
+4. Create Azure Storage. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption).
+5. Mount Azure Storage into Azure Spring Apps to `/var/logs/`. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption#add-storage-to-an-app).
 
 ### 2.2. Deploy Current Sample
-1. Build package.
+1. Set these environment variables for the app.
+   ```properties
+   logs-directory=/var/logs/system-a
+   processed-logs-directory=/var/logs/system-a-processed
+   spring.cloud.azure.eventhubs.connection-string=
+   spring.cloud.azure.eventhubs.event-hub-name=
+   ```
+2. Upload some sample log files into Azure Storage Files.
+3. Set necessary environment variables according to the created resources.
+   ```shell
+   RESOURCE_GROUP=
+   LOCATION=
+   AZURE_CONTAINER_APPS_ENVIRONMENT=
+   AZURE_SPRING_APPS_INSTANCE=
+   APP_NAME=
+   STORAGE_ACCOUNT_NAME=
+   FILE_SHARE_NAME=
+   STORAGE_MOUNT_NAME=
+   ```
+4. Build package.
    ```shell
    ./mvnw clean package
    ```
-2. Deploy app
+5. Deploy app
    ```shell
    az spring app deploy \
      --resource-group $RESOURCE_GROUP \
@@ -88,14 +108,14 @@
      --name $APP_NAME \
      --artifact-path target/azure-spring-apps-file-processing-sample-0.0.1-SNAPSHOT.jar
    ```
-3. Check log by [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/)
+6. Check log by [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/)
    ```shell
    az spring app logs \
      --resource-group $RESOURCE_GROUP \
      --service $AZURE_SPRING_APPS_INSTANCE \
      --name $APP_NAME
    ```
-4. Check logs by [Azure Portal](https://ms.portal.azure.com/) -> Monitoring -> Logs
+7. Check logs by [Azure Portal](https://ms.portal.azure.com/) -> Monitoring -> Logs
  
    Query:
    ```
