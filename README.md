@@ -80,8 +80,8 @@
 ### 2.2. Deploy Current Sample
 1. Set these environment variables for the app.
    ```properties
-   logs-directory=/var/logs/system-a
-   processed-logs-directory=/var/logs/system-a-processed
+   logs-directory=/var/log/system-a
+   processed-logs-directory=/var/log/system-a-processed
    spring.cloud.azure.eventhubs.connection-string=
    spring.cloud.azure.eventhubs.event-hub-name=
    ```
