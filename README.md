@@ -56,9 +56,8 @@
       - This file is filtered out, why?
       - How many line does this line have?
 
-## 2. Run Current Sample on Azure Spring Apps Consumption Plan
 
-### 2.1. System Diagram
+### 1.3. System Diagram
 
    ![system-diagram](./pictures/system-diagram.png)
 
@@ -67,12 +66,16 @@
 3. **Azure Event Hubs**: In log files, each valid line will be converted into avro format then send to Azure Event Hubs. 
 4. **Log Analytics**: When current application run in Azure Spring Apps, the logs can be viewed by Log Analytics.
 
-### Provision required Azure resources
+## 2. Run Current Sample on Azure Spring Apps Consumption Plan
+
+### 2.1. Provision Required Azure Resources
+
 1. Provision an Azure Spring Apps Standard consumption plan. Refs: [Provision an Azure Spring Apps Standard consumption plan service instance](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-provision-standard-consumption-service-instance?tabs=Azure-portal).
 2. Create an Azure Event Hub. Refs: [Create an event hub using Azure portal](https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-create).
 3. Create Azure Storage. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption).
+4. Mount Azure Storage into Azure Spring Apps. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption#add-storage-to-an-app).
 
-### Deploy current sample.
+### 2.2. Deploy Current Sample
 1. Build package.
    ```shell
    ./mvnw clean package
@@ -106,9 +109,9 @@
    Screenshot:
    ![check-log-by-portal](./pictures/check-log-by-portal.png)
 
-## Scenario 2: Operation friendly
+### 2.3. Check the execution result
 
-1. When a line of text is invalid. Handled by: Output a warning log.
+1. When a line of text is invalid, output a warning log, then continue handling remaining lines.
 
    Query:
    ```
@@ -123,9 +126,7 @@
    Screenshot:
    ![wrong-text-format](./pictures/wrong-text-format.png)
 
-2. Easy troubleshooting. 
-
-   2.1. Example 1: Get all logs about a specific file.
+2. Get all logs about a specific file.
 
    Query:
    ```
@@ -140,14 +141,16 @@
    Screenshot:
    ![get-all-logs-about-a-specific-file](./pictures/get-all-logs-about-a-specific-file.png)
 
-   2.2. Example 2: Check events in Azure Event Hubs.
+3. Check events in Azure Event Hubs.
    
    Events in Azure Event Hubs can be viewed by [ServiceBusExplorer](https://github.com/paolosalvatori/ServiceBusExplorer). (I'm using version 5.0.4.)
 
    Screenshot:
    ![service-bus-explorer](./pictures/service-bus-explorer.png)
 
-## Scenario 3: Store secret in Azure Key Vault
+## 3. Next Steps
+
+### 3.1. Store secret in Azure Key Vault
 
 Secret can be stored in [Azure Key Vault secrets](https://learn.microsoft.com/en-us/azure/key-vault/secrets/about-secrets) and used in this application. [spring-cloud-azure-starter-keyvault](https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-key-vault) is a useful tool to get secrets from Azure KeyVault in Spring Boot applications. And `spring-cloud-azure-starter-keyvault` supports refresh the secrets in a fixed interval.
 
@@ -155,13 +158,11 @@ The following values can be treated as secrets in current file-processing applic
 1. Connection string to Azure Event Hubs.
 2. Passwords of a specific file. All file-secret can be stored a key-value map. And the key-value map can be serialized and stored in Azure Key Vault Secrets. 
 
-## Scenario 4: Auto Scaling.
+### 3.2. Auto Scaling.
 
-NOTE: This feature is not implemented yet. The following contents are just some considerations.
+### 3.2.1. Scale 0 - 1
 
-### 4.1. Scale 0 - 1
-
-#### 4.1.1. Requirement
+#### 3.2.1.1. Requirement
 
 1. Scale to 0 instance when:
    - There is no file need to be handled for more than 1 hour. 
@@ -170,17 +171,17 @@ NOTE: This feature is not implemented yet. The following contents are just some 
    - File count > 100.
    - File total size > 1 GB.
 
-#### 4.1.2. Current Problem
+#### 3.2.1.2. Current Problem
 1. Now KEDA does not support scaling by Azure Storage File Share. Refs: [Currently available scalers for KEDA](https://keda.sh/docs/2.9/scalers/)
 
-### 4.2. Scale 1 - n
+### 3.2.2. Scale 1 - n
 
-#### 4.2.1. Requirement
+#### 3.2.2.1. Requirement
 
 1. Scale instances by the workload. Here are some example strategy:
     - Scale instance number to Math.max(fileCount / 10000. fileSize / 10000).
 
-#### 4.2.2. Current Problem
+#### 3.2.2.2. Current Problem
 1. Now KEDA does not support scaling by Azure Storage File Share. Refs: [Currently available scalers for KEDA](https://keda.sh/docs/2.9/scalers/).
 2. In current implementation, when the instance count > 1, files are possible to be processed more than one time. Maybe [Master/slave module](https://en.wikipedia.org/wiki/Master/slave_(technology)) can be used. Need more investigation to implement this module in ASA.
 
