@@ -20,25 +20,25 @@ public class FileMessageUtil {
     public static final String FILE_ORIGINAL_FILE = "file_originalFile";
     public static final String LINE_NUMBER_IN_FILE = "lineNumberInFile";
 
-    public static List<TxtLine> toTxtLineThenMoveFile(Message<String> message, String inputDirectory, String outputDirectory) {
+    public static List<TxtLine> toTxtLineThenMoveFile(Message<String> message, String logsDirectory, String processedLogsDirectory) {
         String[] lines = message.getPayload().split("\\r?\\n");
         List<TxtLine> txtLines = new ArrayList<>();
         for (int i = 0; i < lines.length; i++) {
             txtLines.add(new TxtLine(i + 1, lines[i].trim()));
         }
         LOGGER.info("Split one file into lines. file = {}, lineNumber = {}.", getAbsolutePath(message), txtLines.size());
-        moveFile(message, inputDirectory, outputDirectory);
+        moveFile(message, logsDirectory, processedLogsDirectory);
         return txtLines;
     }
 
-    public static void moveFile(Message<String> message, String inputDirectory, String outputDirectory) {
+    public static void moveFile(Message<String> message, String logsDirectory, String processedLogsDirectory) {
         File file = getOptionalFile(message).orElse(null);
         if (file == null) {
             LOGGER.warn("Move file failed because file is null.");
             return;
         }
         String oldPath = getAbsolutePath(message);
-        String newPath = newPath(oldPath, inputDirectory, outputDirectory);
+        String newPath = newPath(oldPath, logsDirectory, processedLogsDirectory);
         File newFile = new File(newPath);
         try {
             Files.createDirectories(newFile.getParentFile().getAbsoluteFile().toPath());
@@ -54,8 +54,8 @@ public class FileMessageUtil {
         }
     }
 
-    private static String newPath(String currentPath, String inputDirectory, String outputDirectory) {
-        return currentPath.replaceFirst(quoteReplacement(inputDirectory), quoteReplacement(outputDirectory));
+    private static String newPath(String currentPath, String logsDirectory, String processedLogsDirectory) {
+        return currentPath.replaceFirst(quoteReplacement(logsDirectory), quoteReplacement(processedLogsDirectory));
     }
 
 

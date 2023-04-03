@@ -1,5 +1,5 @@
-input-directory: "test-files/input"
-output-directory: "test-files/output"
+logs-directory: "test-files/input"
+processed-logs-directory: "test-files/output"
 logging:
   level:
     root: INFO

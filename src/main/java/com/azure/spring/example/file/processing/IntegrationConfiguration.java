@@ -23,31 +23,31 @@ public class IntegrationConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationConfiguration.class);
 
-    private final String inputDirectory;
-    private final String outputDirectory;
+    private final String logsDirectory;
+    private final String processedLogsDirectory;
     private final String eventHubName;
     private final EventHubsTemplate eventHubsTemplate;
 
-    public IntegrationConfiguration(@Value("${input-directory}") String inputDirectory,
-                                    @Value("${output-directory}") String outputDirectory,
+    public IntegrationConfiguration(@Value("${logs-directory}") String logsDirectory,
+                                    @Value("${processed-logs-directory}") String processedLogsDirectory,
                                     @Value("${spring.cloud.azure.eventhubs.event-hub-name}") String eventHubName,
                                     EventHubsTemplate eventHubsTemplate) {
-        this.inputDirectory = toAbsolutePath(inputDirectory);
-        this.outputDirectory = toAbsolutePath(outputDirectory);
+        this.logsDirectory = toAbsolutePath(logsDirectory);
+        this.processedLogsDirectory = toAbsolutePath(processedLogsDirectory);
         this.eventHubName = eventHubName;
         this.eventHubsTemplate = eventHubsTemplate;
-        LOGGER.info("inputDirectory = {}, outputDirectory = {}, eventHubName = {}.", inputDirectory, outputDirectory, eventHubName);
+        LOGGER.info("logsDirectory = {}, processedLogsDirectory = {}, eventHubName = {}.", logsDirectory, processedLogsDirectory, eventHubName);
     }
 
     @Bean
     @SuppressWarnings("unchecked")
     public IntegrationFlow fileReadingFlow() {
         return IntegrationFlow
-                .from(Files.inboundAdapter(new File(inputDirectory)).recursive(true).useWatchService(true),
+                .from(Files.inboundAdapter(new File(logsDirectory)).recursive(true).useWatchService(true),
                         e -> e.poller(Pollers.fixedDelay(0).advice(new ExitSystemReceiveMessageAdvice())))
                 .filter(FileMessageUtil::isTargetFile)
                 .transform(Files.toStringTransformer())
-                .transform(Message.class, message -> FileMessageUtil.toTxtLineThenMoveFile((Message<String>) message, inputDirectory, outputDirectory)) // TODO: Improvements: 1. Move file after send message to event hub. 2. Move file that isTargetFile() == false.
+                .transform(Message.class, message -> FileMessageUtil.toTxtLineThenMoveFile((Message<String>) message, logsDirectory, processedLogsDirectory)) // TODO: Improvements: 1. Move file after send message to event hub. 2. Move file that isTargetFile() == false.
                 .split()
                 .enrichHeaders(s -> s.headerExpressions(c -> c.put(LINE_NUMBER_IN_FILE, "payload.lineNumber()")))
                 .transform(Message.class, FileMessageUtil::toAvroBytes)
