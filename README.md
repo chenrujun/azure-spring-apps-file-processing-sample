@@ -122,7 +122,6 @@
    ```
    AppEnvSpringAppConsoleLogs_CL
    | where TimeGenerated > now(-7m)
-   | where ContainerAppName_s == 'rujche03291'
    | project time_t, Log_s
    | order by time_t asc
    ```
@@ -138,7 +137,6 @@
    ```
    AppEnvSpringAppConsoleLogs_CL
    | where TimeGenerated > now(-40m)
-   | where ContainerAppName_s == 'rujche03291'
    | project time_t, Log_s
    | where Log_s has "Convert txt string to User failed"
    | order by time_t asc
@@ -153,7 +151,6 @@
    ```
    AppEnvSpringAppConsoleLogs_CL
    | where TimeGenerated > now(-40m)
-   | where ContainerAppName_s == 'rujche03291'
    | project time_t, Log_s
    | where Log_s has "/var/azure-spring-apps-file-processing-sample/input/file-1.txt"
    | order by time_t asc
