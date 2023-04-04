@@ -7,6 +7,7 @@
 1. A system generates log files in folders named by date: `/var/log/system-a/${yyyy-MM-dd}`. 
 2. The Log files are txt files named by hour and minute: `${hh-mm}.txt`.
 3. Each line of the log files will have format like this: `name,favorite_number,favorite_color`.
+
 Here is a screenshot about log files and folders:
 
    ![log-file-and-folder](./pictures/log-file-and-folder.png)
