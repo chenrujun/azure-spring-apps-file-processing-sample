@@ -4,7 +4,7 @@
 
 ### 1.1. Log Files Explanation
 
-1. A system generates log files in this folder: `/var/logs/system-a/${yyyy-mm-dd}`. 
+1. A system generates log files in this folder: `/var/log/system-a/${yyyy-mm-dd}`. 
 2. The Log files are txt files, these files will be named by number. For example: `1.txt`.
 3. Each line of the log files will have format like this: `name,favorite_number,favorite_color`.
 
@@ -41,7 +41,7 @@
    }
    ```
 3. Send the avro object to [Azure Event Hubs](https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-about).
-4. After file processed, move the file to another folder `/var/logs/system-a-processed/${yyyy-mm-dd}`
+4. After file processed, move the file to another folder `/var/log/system-a-processed/${yyyy-mm-dd}`
 
 #### 1.2.2. Functional Requirements
 1. The system must be robust. 
@@ -75,7 +75,7 @@
 3. Create an Azure Event Hub. Refs: [Create an event hub using Azure portal](https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-create).
 4. Create Azure Storage Account. Refs: [Create a storage account](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal).
 5. Create a File Share in created Storage account.
-6. Mount Azure Storage into Azure Spring Apps to `/var/logs/`. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption#add-storage-to-an-app).
+6. Mount Azure Storage into Azure Spring Apps to `/var/log/`. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption#add-storage-to-an-app).
 
 ### 2.2. Deploy Current Sample
 1. Set these environment variables for the app.
