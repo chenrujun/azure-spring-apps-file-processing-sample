@@ -53,13 +53,15 @@
 
 #### 1.2.2. Functional Requirements
 1. The system must be robust. 
-   - 1.1. Handle dirty data. When there is an dirty data in a file, output a warning log then continue processing.
-   - 1.2. Retry when there is issue like network. For example: Azure Event Hub can not been accessed.
+   - 1.1. Handle invalid file. Current application only handle txt files. For other file types like csv, it will be filtered out.
+     ![filter-by-file-type](./pictures/filter-by-file-type.png)
+   - 1.2. Handle invalid line. When there is a invalid data line in a file, output a warning log then continue processing.
+     ![invalid-lines](./pictures/invalid-lines.png)
 2. Easy to track.
-   - 2.1. When there is dirty data, the log should contain these information:
+   - 2.1. When there is invalid line, the log should contain these information:
       - Which file?
       - Which line?
-   - 2.2. Track each step of file processing?
+   - 2.2. Track each step of a specific file.
       - Does this file be added in to processing candidate?
       - This file is filtered out, why?
       - How many line does this line have?
