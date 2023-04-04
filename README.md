@@ -8,7 +8,7 @@
 2. The Log files are txt files named by hour and minute: `${hh-mm}.txt`.
 3. Each line of the log files will have format like this: `name,favorite_number,favorite_color`.
 
-Here is a screenshot about log files and folders:
+   Here is a screenshot about folder structure and log file:
 
    ![log-file-and-folder](./pictures/log-file-and-folder.png)
 
