@@ -191,38 +191,36 @@
 
 ## 3. Next Steps
 
-### 3.1. Store secret in Azure Key Vault
+### 3.1. Store Secrets in Azure Key Vault Secrets
 
 Secret can be stored in [Azure Key Vault secrets](https://learn.microsoft.com/en-us/azure/key-vault/secrets/about-secrets) and used in this application. [spring-cloud-azure-starter-keyvault](https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-key-vault) is a useful tool to get secrets from Azure KeyVault in Spring Boot applications. And `spring-cloud-azure-starter-keyvault` supports refresh the secrets in a fixed interval.
 
 The following values can be treated as secrets in current file-processing application:
 1. Connection string to Azure Event Hubs.
-2. Passwords of a specific file. All file-secret can be stored a key-value map. And the key-value map can be serialized and stored in Azure Key Vault Secrets. 
+2. Passwords of a specific file. All file-secret can be stored a key-value map. And the key-value map can be serialized and stored in Azure Key Vault Secrets. Here is example of such map:
+   ```json
+   [
+     {"00-00.txt": "password-0"},
+     {"00-01.txt": "password-1"},
+     {"00-02.txt": "password-2"}
+   ]
+   ```
 
-### 3.2. Auto Scaling.
+### 3.2. Auto Scaling
 
 ### 3.2.1. Scale 0 - 1
 
-#### 3.2.1.1. Requirement
-
-1. Scale to 0 instance when:
-   - There is no file need to be handled for more than 1 hour. 
-2. Scale to 1 instance when one of these requirements satisfied:
-   - File exists for more than 1 hour.
-   - File count > 100.
-   - File total size > 1 GB.
-
-#### 3.2.1.2. Current Problem
-1. Now KEDA does not support scaling by Azure Storage File Share. Refs: [Currently available scalers for KEDA](https://keda.sh/docs/2.9/scalers/)
+1. **Design**
+   1. Scale to 0 instance when:
+      - There is no file need to be handled for more than 1 hour. 
+   2. Scale to 1 instance when one of these requirements satisfied:
+      - File exists for more than 1 hour.
+      - File count > 100.
+      - File total size > 1 GB.
+2. **Implement**: Use **Azure Blob Storage** instead of **Azure File Share**. So related [KEDA Scaler](https://keda.sh/docs/2.9/scalers/azure-storage-blob/) can be used.
 
 ### 3.2.2. Scale 1 - n
 
-#### 3.2.2.1. Requirement
-
-1. Scale instances by the workload. Here are some example strategy:
-    - Scale instance number to Math.max(fileCount / 10000. fileSize / 10000).
-
-#### 3.2.2.2. Current Problem
-1. Now KEDA does not support scaling by Azure Storage File Share. Refs: [Currently available scalers for KEDA](https://keda.sh/docs/2.9/scalers/).
-2. In current implementation, when the instance count > 1, files are possible to be processed more than one time. Maybe [Master/slave module](https://en.wikipedia.org/wiki/Master/slave_(technology)) can be used. Need more investigation to implement this module in ASA.
+1. **Design**: Scale instance number according to file count and total file size.
+2. **Implement**: To avoid competition between instances, use some proven technology like [Master/slave module](https://en.wikipedia.org/wiki/Master/slave_(technology)).
 
