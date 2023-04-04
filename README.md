@@ -195,9 +195,9 @@
 
 Secret can be stored in [Azure Key Vault secrets](https://learn.microsoft.com/en-us/azure/key-vault/secrets/about-secrets) and used in this application. [spring-cloud-azure-starter-keyvault](https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-key-vault) is a useful tool to get secrets from Azure KeyVault in Spring Boot applications. And `spring-cloud-azure-starter-keyvault` supports refresh the secrets in a fixed interval.
 
-The following values can be treated as secrets in current file-processing application:
-1. Connection string to Azure Event Hubs.
-2. Passwords of a specific file. All file-secret can be stored a key-value map. And the key-value map can be serialized and stored in Azure Key Vault Secrets. Here is example of such map:
+The following are some examples of using secrets in current application:
+1. Azure Event Hubs connection string.
+2. Passwords to access file. All passwords can be stored in a key-value map. Here is example of such map:
    ```json
    [
      {"00-00.txt": "password-0"},
