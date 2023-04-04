@@ -76,6 +76,9 @@
 3. **Azure Event Hubs**: In log files, each valid line will be converted into avro format then send to Azure Event Hubs. 
 4. **Log Analytics**: When current application run in Azure Spring Apps, the logs can be viewed by Log Analytics.
 
+### 1.4. The Application
+The scenario is a classic [Enterprise Integration Pattern](https://www.enterpriseintegrationpatterns.com/index.html), so we use the [Spring Boot](https://spring.io/projects/spring-boot) + [Spring Integration](https://spring.io/projects/spring-integration) in this application.
+
 ## 2. Run Current Sample on Azure Spring Apps Consumption Plan
 
 ### 2.1. Provision Required Azure Resources
