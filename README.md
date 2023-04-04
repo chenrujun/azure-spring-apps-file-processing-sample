@@ -8,7 +8,7 @@
 2. The Log files are txt files named by hour and minute: `${hh-mm}.txt`.
 3. Each line of the log files will have format like this: `name,favorite_number,favorite_color`.
 
-   Here is a screenshot about folder structure and log file:
+   Here is a picture about folder structure and log file:
 
    ![log-file-and-folder](./pictures/log-file-and-folder.png)
 
@@ -46,6 +46,10 @@
    ```
 3. Send the avro object to [Azure Event Hubs](https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-about).
 4. After file processed, move the file to another folder `/var/log/system-a-processed/${yyyy-MM-dd}`
+
+   Here is a picture about moving log files after processed:
+
+   ![move-file-after-processed](./pictures/move-file-after-processed.png)
 
 #### 1.2.2. Functional Requirements
 1. The system must be robust. 
