@@ -82,6 +82,7 @@ Here is a screenshot about log files and folders:
 6. Mount Azure Storage into Azure Spring Apps to `/var/log/`. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption#add-storage-to-an-app).
 
 ### 2.2. Deploy Current Sample
+
 1. Set these environment variables for the app.
    ```properties
    logs-directory=/var/log/system-a
@@ -89,22 +90,26 @@ Here is a screenshot about log files and folders:
    spring.cloud.azure.eventhubs.connection-string=
    spring.cloud.azure.eventhubs.event-hub-name=
    ```
+
 2. Upload some sample log files into Azure Storage Files.
-3. Set necessary environment variables according to the created resources.
+
+3. Build package.
+   ```shell
+   ./mvnw clean package
+   ```
+
+4. Set necessary environment variables according to the created resources.
    ```shell
    RESOURCE_GROUP=
    LOCATION=
-   AZURE_CONTAINER_APPS_ENVIRONMENT=
    AZURE_SPRING_APPS_INSTANCE=
+   AZURE_CONTAINER_APPS_ENVIRONMENT=
    APP_NAME=
    STORAGE_ACCOUNT_NAME=
    FILE_SHARE_NAME=
    STORAGE_MOUNT_NAME=
    ```
-4. Build package.
-   ```shell
-   ./mvnw clean package
-   ```
+
 5. Deploy app
    ```shell
    az spring app deploy \
@@ -113,6 +118,7 @@ Here is a screenshot about log files and folders:
      --name $APP_NAME \
      --artifact-path target/azure-spring-apps-file-processing-sample-0.0.1-SNAPSHOT.jar
    ```
+
 6. Check log by [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/)
    ```shell
    az spring app logs \
