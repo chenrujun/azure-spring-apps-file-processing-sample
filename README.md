@@ -120,44 +120,51 @@ Here is a screenshot about log files and folders:
      --service $AZURE_SPRING_APPS_INSTANCE \
      --name $APP_NAME
    ```
+
+   Screenshot:
+   ![check-log-by-azure-cli](./pictures/check-log-by-azure-cli.png)
+
 7. Check logs by [Azure Portal](https://ms.portal.azure.com/) -> Monitoring -> Logs
  
    Query:
    ```
    AppEnvSpringAppConsoleLogs_CL
-   | where TimeGenerated > now(-7m)
-   | project time_t, Log_s
-   | order by time_t asc
+   | where ContainerAppName_s == 'app-rujche-0406-1'
+   | project time_s, Log_s
+   | order by time_s asc
+   | limit 200
    ```
 
    Screenshot:
    ![check-log-by-portal](./pictures/check-log-by-portal.png)
 
-### 2.3. Check the execution result
+### 2.3. Check the details about file processing
 
-1. When a line of text is invalid, output a warning log, then continue handling remaining lines.
+1. Get log of specific error.
 
    Query:
    ```
    AppEnvSpringAppConsoleLogs_CL
-   | where TimeGenerated > now(-40m)
-   | project time_t, Log_s
+   | where ContainerAppName_s == 'app-rujche-0406-1'
    | where Log_s has "Convert txt string to User failed"
-   | order by time_t asc
+   | project time_s, Log_s
+   | order by time_s asc
+   | limit 200
    ```
 
    Screenshot:
    ![wrong-text-format](./pictures/wrong-text-format.png)
 
-2. Get all logs about a specific file.
+2. Get logs about a specific file.
 
    Query:
    ```
    AppEnvSpringAppConsoleLogs_CL
-   | where TimeGenerated > now(-40m)
-   | project time_t, Log_s
-   | where Log_s has "/var/azure-spring-apps-file-processing-sample/input/file-1.txt"
-   | order by time_t asc
+   | where ContainerAppName_s == 'app-rujche-0406-1'
+   | where Log_s has "/var/log/system-a/2023-04-06/00-00.txt"
+   | project time_s, Log_s
+   | order by time_s asc
+   | limit 200
    ```
 
    Screenshot:
