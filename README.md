@@ -4,8 +4,8 @@
 
 ### 1.1. Log Files Explanation
 
-1. A system generates log files in this folder: `/var/log/system-a/${yyyy-mm-dd}`. 
-2. The Log files are txt files, these files will be named by number. For example: `1.txt`.
+1. A system generates log files in folders named by date: `/var/log/system-a/${yyyy-MM-dd}`. 
+2. The Log files are txt files named by hour and minute: `${hh-mm}.txt`.
 3. Each line of the log files will have format like this: `name,favorite_number,favorite_color`.
 
 ### 1.2. File Processing Requirements
@@ -41,7 +41,7 @@
    }
    ```
 3. Send the avro object to [Azure Event Hubs](https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-about).
-4. After file processed, move the file to another folder `/var/log/system-a-processed/${yyyy-mm-dd}`
+4. After file processed, move the file to another folder `/var/log/system-a-processed/${yyyy-MM-dd}`
 
 #### 1.2.2. Functional Requirements
 1. The system must be robust. 

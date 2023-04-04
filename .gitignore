@@ -473,6 +473,4 @@ out/
 .vscode/
 
 develop.yml
-
-test-files/input/generated
-test-files/output
+!test-files/var/log
