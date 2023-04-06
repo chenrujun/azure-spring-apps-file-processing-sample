@@ -93,12 +93,12 @@ The scenario is a classic [Enterprise Integration Pattern](https://www.enterpris
 
 ### 2.1. Provision Required Azure Resources
 
-1. Provision an Azure Spring Apps Standard consumption plan. Refs: [Provision an Azure Spring Apps Standard consumption plan service instance](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-provision-standard-consumption-service-instance?tabs=Azure-portal).
+1. Provision an Azure Spring Apps instance. Refs: [Quickstart: Provision an Azure Spring Apps service instance](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-provision-service-instance?tabs=Azure-portal&pivots=programming-language-java).
 2. Create An app in created Azure Spring Apps.
 3. Create an Azure Event Hub. Refs: [Create an event hub using Azure portal](https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-create).
 4. Create Azure Storage Account. Refs: [Create a storage account](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal).
 5. Create a File Share in created Storage account.
-6. Mount Azure Storage into Azure Spring Apps to `/var/log/`. Refs: [How to enable your own persistent storage in Azure Spring Apps with the Standard consumption plan](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage-with-standard-consumption#add-storage-to-an-app).
+6. Mount Azure Storage into Azure Spring Apps to `/var/log/`. Refs: [How to enable your own persistent storage in Azure Spring Apps](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-custom-persistent-storage?tabs=Azure-portal).
 
 ### 2.2. Deploy Current Sample
 
@@ -110,7 +110,7 @@ The scenario is a classic [Enterprise Integration Pattern](https://www.enterpris
    spring.cloud.azure.eventhubs.event-hub-name=
    ```
 
-2. Upload some sample log files into Azure Storage Files.
+2. Upload some sample log files into Azure Storage Files. You can use files in [./test-files/var/log/system-a](./test-files/var/log/system-a).
 
 3. Build package.
    ```shell
@@ -120,13 +120,8 @@ The scenario is a classic [Enterprise Integration Pattern](https://www.enterpris
 4. Set necessary environment variables according to the created resources.
    ```shell
    RESOURCE_GROUP=
-   LOCATION=
    AZURE_SPRING_APPS_INSTANCE=
-   AZURE_CONTAINER_APPS_ENVIRONMENT=
    APP_NAME=
-   STORAGE_ACCOUNT_NAME=
-   FILE_SHARE_NAME=
-   STORAGE_MOUNT_NAME=
    ```
 
 5. Deploy app
@@ -138,68 +133,37 @@ The scenario is a classic [Enterprise Integration Pattern](https://www.enterpris
      --artifact-path target/azure-spring-apps-file-processing-sample-0.0.1-SNAPSHOT.jar
    ```
 
-6. Check log by [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/)
-   ```shell
-   az spring app logs \
-     --resource-group $RESOURCE_GROUP \
-     --service $AZURE_SPRING_APPS_INSTANCE \
-     --name $APP_NAME
-   ```
-
-   Screenshot:
-   ![check-log-by-azure-cli](./pictures/check-log-by-azure-cli.png)
-
-7. Check logs by [Azure Portal](https://ms.portal.azure.com/) -> Monitoring -> Logs
- 
-   Query:
-   ```
-   AppEnvSpringAppConsoleLogs_CL
-   | where ContainerAppName_s == 'app-rujche-0406-1'
-   | project time_s, Log_s
-   | order by time_s asc
-   | limit 200
-   ```
-
-   Screenshot:
-   ![check-log-by-portal](./pictures/check-log-by-portal.png)
+   After deployed successfully, you can see logs like this: 
+   ![check-logs-after-deployed](./pictures/check-logs-after-deployed.png)
 
 ### 2.3. Check Details About File Processing
 
-1. Get log of specific error.
-
-   Query:
-   ```
-   AppEnvSpringAppConsoleLogs_CL
-   | where ContainerAppName_s == 'app-rujche-0406-1'
-   | where Log_s has "Convert txt string to User failed"
-   | project time_s, Log_s
-   | order by time_s asc
-   | limit 200
-   ```
+1. Check logs by [Azure Toolkit for IntelliJ](https://github.com/microsoft/azure-tools-for-java/blob/develop/PluginsAndFeatures/azure-toolkit-for-intellij/azure-intellij-plugin-lib/src/main/resources/whatsnew.md#added-2).
 
    Screenshot:
-   ![wrong-text-format](./pictures/wrong-text-format.png)
+   ![check-logs-by-azure-toolkit-for-intellij](./pictures/check-logs-by-azure-toolkit-for-intellij.png)
 
-2. Get logs about a specific file.
+2. Get log of specific error.
 
-   Query:
-   ```
-   AppEnvSpringAppConsoleLogs_CL
-   | where ContainerAppName_s == 'app-rujche-0406-1'
-   | where Log_s has "/var/log/system-a/2023-04-06/00-00.txt"
-   | project time_s, Log_s
-   | order by time_s asc
-   | limit 200
-   ```
+   Input `Convert txt string to User failed` in search box:
+   ![/pictures/check-logs-by-azure-toolkit-for-intellij-for-specific-error](./pictures/check-logs-by-azure-toolkit-for-intellij-for-specific-error.png)
+   Error details can be found in the log:
+   ![/pictures/check-logs-by-azure-toolkit-for-intellij-for-specific-error-1](./pictures/check-logs-by-azure-toolkit-for-intellij-for-specific-error-1.png)
 
-   Screenshot:
-   ![get-all-logs-about-a-specific-file](./pictures/get-all-logs-about-a-specific-file.png)
+3. Get all logs about a specific file.
 
-3. Check events in Azure Event Hubs.
+   Input `/var/log/system-a/00-00.txt` in search box:
+   ![get-all-logs-about-a-specific-file-1](./pictures/get-all-logs-about-a-specific-file-1.png)
+
+   Input `/var/log/system-a/00-03.csv` in search box:
+   ![get-all-logs-about-a-specific-file-2](./pictures/get-all-logs-about-a-specific-file-2.png)
+
+4. Check events in Azure Event Hubs.
+
+   Check events by Azure Toolkit for IntelliJ:
+   ![listen-to-event-hub-by-azure-toolkit-for-intellij](./pictures/listen-to-event-hub-by-azure-toolkit-for-intellij.png)
    
-   Events in Azure Event Hubs can be viewed by [ServiceBusExplorer](https://github.com/paolosalvatori/ServiceBusExplorer). (I'm using version 5.0.4.)
-
-   Screenshot:
+   Another way to check events is using [ServiceBusExplorer](https://github.com/paolosalvatori/ServiceBusExplorer). It can give more information about message properties:
    ![service-bus-explorer](./pictures/service-bus-explorer.png)
 
 ## 3. Next Steps
